@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+    <form action="index.php?action=sigin" method="post" id="myForm">
+        <input type="text" name="username" placeholder="Username" required="required" />
+        <input type="password" name="password" placeholder="Password" required="required" />
+        <input type="email" name="email" placeholder="email" required="required" />
+        <input type="text" name="captchCode" placeholder="Captch" required="required" />
+        <image src="index.php?action=getCaptch" alt="Logo" id="myImage" class="logo" onclick="refreshImage()">
+        <pre>点击图片刷新验证码</pre>
+        <button type="submit">注册</button>
+    </form>
+    <script type="text/javascript">
+        var myForm = document.getElementById('myForm');
+        myForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+            var username = document.getElementsByName('username')[0].value;
+            var password = document.getElementsByName('password')[0].value;
+            var email = document.getElementsByName('email')[0].value;
+            var captch = document.getElementsByName('captchCode')[0].value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'index.php?action=sigin', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('username=' + username + '&password=' + password + '&email=' + email + '&captchCode=' + captch);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var obj = JSON.parse(xhr.responseText);
+                    console.log(obj);
+                    if(obj.code == 200){
+                        alert('注册成功');
+                        window.location.href = '#';
+                    }else{
+                        alert(obj.message);
+                    }
+                }
+            }
+        });
+
+        function refreshImage() {
+            var image = document.getElementById("myImage");
+            image.src = image.src + "&date=" + new Date().getTime();
+        }
+    </script>
+</body>
+</html>
